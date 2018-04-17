@@ -29,8 +29,8 @@ int dequeue() {
             front = rear = -1;
         }else{
             ++front;
-            return temp;
         }
+        return temp;
     }
     return -1;
 }
@@ -69,15 +69,17 @@ int main() {
         scanf("%d%d", &p[i].at, &p[i].bt);
         p[i].rt=p[i].bt;
         p[i].completed=0;
-        sum_bt+=p[i].bt;
+        sum_bt += p[i].bt;
     }
     printf("\nEnter the time slice:");
     scanf("%d",&tq);
     sortByArrival();
     enqueue(0);
     printf("Process execution order: ");
-    for(time=p[0].at; time<sum_bt;) {
+    int count = 50;
+    for(time=p[0].at; time<=sum_bt; ++time) {
         i = dequeue();
+        printf("value of queue is%d%d\n", i, time);
         if(p[i].rt <= tq) {
             time += p[i].rt;
             p[i].rt = 0;
@@ -102,6 +104,10 @@ int main() {
             }
             enqueue(i);
         }
+        if(count <= 0){
+            break;
+        }
+        --count;
     }
 
     printf("\nName\tArrival Time\tBurst Time\tWaiting Time\tTurnAround Time\t Normalized TT");
