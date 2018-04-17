@@ -67,8 +67,8 @@ int main() {
         p[i].name = c;
         printf("\nEnter the arrival time and burst time of process %c: ",p[i].name);
         scanf("%d%d", &p[i].at, &p[i].bt);
-        p[i].rt=p[i].bt;
-        p[i].completed=0;
+        p[i].rt = p[i].bt;
+        p[i].completed = 0;
         sum_bt += p[i].bt;
     }
     printf("\nEnter the time slice:");
@@ -76,38 +76,35 @@ int main() {
     sortByArrival();
     enqueue(0);
     printf("Process execution order: ");
-    int count = 50;
-    for(time=p[0].at; time<=sum_bt; ++time) {
+    for(time=p[0].at; time<=sum_bt;) {
         i = dequeue();
-        printf("value of queue is%d%d\n", i, time);
         if(p[i].rt <= tq) {
             time += p[i].rt;
             p[i].rt = 0;
             p[i].completed = 1;
-            printf(" %c ", p[i].name);
+            printf(" %c %d \n", p[i].name, p[i].rt);
             p[i].wt = time - p[i].at - p[i].bt;
             p[i].tt = time - p[i].at;
             p[i].ntt = ((float)p[i].tt / p[i].bt);
             for(j = 0; j < n; j++) {
-                if(p[j].at <= time && p[j].completed != 1 && isInQueue(j) != 1) {
+                if(p[j].at <= time && p[j].completed != 1 && isInQueue(j) != 1 && p[j].rt > 0) {
                     enqueue(j);
                 }
             }
         }else {
             time += tq;
             p[i].rt -= tq;
-            printf(" %c ", p[i].name);
+            printf(" %c %d \n", p[i].name, p[i].rt);
             for(j=0; j<n; j++){
-                if(p[j].at <= time && p[j].completed != 1 && isInQueue(j) != 1) {
+                if(p[j].at <= time && p[j].completed != 1 && isInQueue(j) != 1 && p[j].rt > 0) {
                     enqueue(j);
                 }
             }
-            enqueue(i);
+            if(p[i].rt > 0) {
+                enqueue(i);
+            }
+            
         }
-        if(count <= 0){
-            break;
-        }
-        --count;
     }
 
     printf("\nName\tArrival Time\tBurst Time\tWaiting Time\tTurnAround Time\t Normalized TT");
