@@ -9,27 +9,36 @@ int main() {
 
     int length = sizeof(pages) / sizeof(pages[0]);
     int page_faults = 0;
-    int j = N-1;
+    int j = 0;
     for(int i=0; i<length; i++) {
-        if(frame[j] == -1) {
+        int flag = 0;
+        if(j < N && frame[j] == -1) {
             frame[j] = pages[i];
             ++j;    
-        }
-        int k = 0;
-        while(k < N) {
-            if(frame[k] == pages[i]) {
-                break;
-            }else{
-                ++k;
+        }else{
+            int k = 0;
+            while(k < N) {
+                if(frame[k] == pages[i]) {
+                    flag = 1;
+                    break;
+                }else{
+                    ++k;
+                }
             }
-        }
-        ++page_faults;
-        int temp = frame[0];
-        for(int k = 0; k<N-1; k++) {
-            frame[k] = frame[k+1]; 
-        }
-        frame[k] = pages[i];
+            if(flag == 0) {
+                ++page_faults;
+                int temp = frame[0];
+                for(int l = 1; l<N; l++) {
+                    frame[l] = frame[l+1]; 
+                }
+                frame[k] = pages[i];
+            }
+        }                
     }
     
-    printf("%d", page_faults);
+    printf("%d\n", page_faults);
+
+    for(int i = 0; i <  N; i++) {
+        printf("%d\n", frame[i]);
+    }
 }
